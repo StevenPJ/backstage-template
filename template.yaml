@@ -15,13 +15,29 @@ spec:
       required:
         - name
       properties:
-        name:
-          title: Name
+        application:
+          title: Application Name
           type: string
-          description: Unique name of the component
+          description: Name of the component
           ui:autofocus: true
           ui:options:
             rows: 5
+        namespace:
+          title: Namespace
+          type: string
+          description: Namespace the app is deployed to i.e. ssv|eevee
+          ui:autofocus: true
+          ui:options:
+            rows: 5   
+        upstream_helm_chart:
+          title: Base Helm Chart
+          type: string
+          description: The base helm chart to extend for the app
+          ui:autofocus: true
+          enum:
+            - backend-generic
+            - backend-spring
+            - backend-micronaut
     - title: Choose a location
       required:
         - repoUrl
@@ -31,6 +47,9 @@ spec:
           type: string
           ui:field: RepoUrlPicker
           ui:options:
+            allowedOrganizations:
+              - eeveebank
+              - StevenPJ
             allowedHosts:
               - github.com
 
@@ -42,7 +61,12 @@ spec:
       input:
         url: https://github.com/eeveebank/cookiecutter-app-chart
         cookiecutterCompat: true
-
+        values:
+          application: ${{ parameters.application }}
+          repository: ${{ parameters.repoUrl }}
+          namespace: ${{ parameters.namespace }}
+          upstream_helm_chart: ${{ parameters.upstream_helm_chart }}
+            
     - id: publish
       name: Publish
       action: publish:github:pull-request
