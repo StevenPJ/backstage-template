@@ -13,7 +13,9 @@ spec:
   parameters:
     - title: Fill in some steps
       required:
-        - name
+        - application
+        - namespace
+        - upstream_helm_chart
       properties:
         application:
           title: Application Name
