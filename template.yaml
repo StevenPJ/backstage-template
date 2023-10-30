@@ -1,41 +1,27 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
+# some metadata about the template itself
 metadata:
-  name: docs-template
-  title: Documentation Template
-  description: Create a new standalone documentation project
-  tags:
-    - recommended
-    - techdocs
-    - mkdocs
+  name: create-app-chart
+  title: Create App Chart
+  description: Create's a new helm chart for your app
 spec:
-  owner: my-awesome-team
-  type: documentation
+  owner: production-engineering
+  type: service
 
+  # these are the steps which are rendered in the frontend with the form input
   parameters:
     - title: Fill in some steps
       required:
         - name
-        - description
       properties:
         name:
           title: Name
           type: string
           description: Unique name of the component
-          ui:field: EntityNamePicker
           ui:autofocus: true
-        description:
-          title: Description
-          type: string
-          description: A description for the component
-        owner:
-          title: Owner
-          type: string
-          description: Owner of the component
-          ui:field: OwnerPicker
           ui:options:
-            allowedKinds:
-              - Group
+            rows: 5
     - title: Choose a location
       required:
         - repoUrl
@@ -48,40 +34,19 @@ spec:
             allowedHosts:
               - github.com
 
-  # This template is meant to be used on top of an existing template.
-  # By adding the following and fetching from an absolute URL you can
-  # add in the docs template
+  # here's the steps that are executed in series in the scaffolder backend
   steps:
-    - id: fetch
-      name: Template Docs Skeleton
+    - id: fetch-base
+      name: Fetch Base
       action: fetch:template
       input:
-        url: ./skeleton
-        values:
-          name: ${{ parameters.name }}
-          description: ${{ parameters.description }}
-          destination: ${{ parameters.repoUrl | parseRepoUrl }}
-          owner: ${{ parameters.owner }}
+        url: https://github.com/eeveebank/cookiecutter-app-chart
+        cookiecutterCompat: true
 
     - id: publish
       name: Publish
-      action: publish:github
+      action: publish:github:pull-request
       input:
         allowedHosts: ['github.com']
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
-
-    - id: register
-      name: Register
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
-
-  output:
-    links:
-      - title: Repository
-        url: ${{ steps.publish.output.remoteUrl }}
-      - title: Open in catalog
-        icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
