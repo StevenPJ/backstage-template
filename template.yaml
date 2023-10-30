@@ -59,10 +59,9 @@ spec:
   steps:
     - id: fetch-base
       name: Fetch Base
-      action: fetch:template
+      action: fetch:cookiecutter
       input:
         url: https://github.com/eeveebank/cookiecutter-app-chart
-        cookiecutterCompat: true
         values:
           application: ${{ parameters.application }}
           repository: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
