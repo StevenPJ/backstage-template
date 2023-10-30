@@ -65,7 +65,7 @@ spec:
         cookiecutterCompat: true
         values:
           application: ${{ parameters.application }}
-          repository: ${{ parameters.repoUrl }}
+          repository: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
           namespace: ${{ parameters.namespace }}
           upstream_helm_chart: ${{ parameters.upstream_helm_chart }}
             
