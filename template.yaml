@@ -59,10 +59,9 @@ spec:
   steps:
     - id: backstage_request
       name: backstage request
-      action: http:backstage:request
+      action: fetch:plain
       input:
-        method: 'GET'
-        path: '/proxy/cookiecutter/cookiecutter'
+        url: '/proxy/cookiecutter/cookiecutter'
           
             
     - id: publish
