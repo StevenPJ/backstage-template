@@ -61,7 +61,7 @@ spec:
       name: backstage request
       action: fetch:plain
       input:
-        url: 'http://localhost:8080/cookiecutter'
+        url: 'proxy/cookiecutter/cookiecutter'
           
             
     - id: publish
