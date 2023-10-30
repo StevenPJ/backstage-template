@@ -62,7 +62,7 @@ spec:
       action: http:backstage:request
       input:
         method: 'GET'
-        path: '/proxy/localhost:8080/cookiecutter'
+        path: '/proxy/cookiecutter/cookiecutter'
           
             
     - id: publish
