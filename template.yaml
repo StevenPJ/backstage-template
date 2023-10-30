@@ -78,6 +78,7 @@ spec:
       name: Publish
       action: publish:github:pull-request
       input:
-        allowedHosts: ['github.com']
-        description: This is ${{ parameters.name }}
+        title: Setup app chart
+        branchName: setup-app-chart
+        description: Setting up app chart from backstage template
         repoUrl: ${{ parameters.repoUrl }}
