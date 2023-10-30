@@ -61,10 +61,9 @@ spec:
       name: Fetch Base
       action: fetch:cookiecutter
       input:
-        url: https://github.com/eeveebank/cookiecutter-app-chart
+        url: "https://github.com/eeveebank/cookiecutter-app-chart/{{ cookiecutter.__project_name }}"
         copyWithoutRender: 
           - "*README.md.gotmpl"
-        targetPath: "{{ cookiecutter.__project_name }}"
         values:
           application: ${{ parameters.application }}
           repository: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
