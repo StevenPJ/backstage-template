@@ -40,7 +40,7 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: https://github.com/eeveebank/cookiecutter-app-chart/tree/master
+        url: https://github.com/eeveebank/cookiecutter-app-chart
         cookiecutterCompat: true
 
     - id: publish
