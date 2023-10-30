@@ -64,6 +64,7 @@ spec:
         url: https://github.com/eeveebank/cookiecutter-app-chart
         copyWithoutRender: 
           - "*README.md.gotmpl"
+        targetPath: "{{ cookiecutter.__project_name }}"
         values:
           application: ${{ parameters.application }}
           repository: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
