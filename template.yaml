@@ -57,22 +57,13 @@ spec:
 
   # here's the steps that are executed in series in the scaffolder backend
   steps:
-    - id: fetch-base
-      name: Fetch Base
-      action: fetch:cookiecutter
+    - id: backstage_request
+      name: backstage request
+      action: http:backstage:request
       input:
-        url: "https://github.com/eeveebank/cookiecutter-app-chart/tree/master/%7B%7B%20cookiecutter.__project_name%20%7D%7D"
-        copyWithoutRender: 
-          - "*README.md.gotmpl"
-        values:
-          application: ${{ parameters.application }}
-          repository: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
-          namespace: ${{ parameters.namespace }}
-          upstream_helm_chart: ${{ parameters.upstream_helm_chart }}
-          __chart_folder: "charts"
-          __github_folder: ".github"
-          __application_slug: "{{ cookiecutter.application.lower().replace(' ', '_') }}"
-          __project_name: "{{ cookiecutter.__application_slug ~ '_app_chart' }}"
+        method: 'GET'
+        path: '/proxy/localhost:8080/cookiecutter'
+          
             
     - id: publish
       name: Publish
