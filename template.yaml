@@ -59,17 +59,10 @@ spec:
   steps:
     - id: backstage_request
       name: backstage request
-      action: http:backstage:request
+      action: boxed:file:httpZip
       input:
         path: 'proxy/cookiecutter/cookiecutter.zip'
         method: 'GET'
-        
-    - id: unzip
-      name: unzip
-      action: boxed:file:unzip
-      input:
-        contents: ${{ steps["backstage_request"].output.body }}
-        filename: thing
           
     - id: publish
       name: Publish
