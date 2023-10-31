@@ -62,7 +62,12 @@ spec:
       action: boxed:file:httpZip
       input:
         path: 'proxy/cookiecutter/cookiecutter.zip'
-        method: 'GET'
+        method: 'POST'
+        headers:
+          Content-Type: 'application/json'
+        body: 
+          sshGitRepoUrl: "git@github.com:eeveebank/cookiecutter-app-chart.git"
+          ref: "v1.0.6"
           
     - id: publish
       name: Publish
