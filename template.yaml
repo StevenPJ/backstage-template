@@ -68,7 +68,7 @@ spec:
       name: unzip
       action: boxed:file:unzip
       input:
-        contents: ${{ steps["backstage_request"].output.body }}
+        contents: ${{ steps["backstage_request"].output.body | pick('message')}}
         filename: thing
           
     - id: publish
