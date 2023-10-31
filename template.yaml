@@ -62,8 +62,14 @@ spec:
       action: fetch:plain
       input:
         url: 'proxy/cookiecutter/cookiecutter'
+        
+    - id: unzip
+      name: unzip
+      action: boxed:file:unzip
+      input:
+        contents: {{ steps["backstage_request"].output.body }}
+        filename: thing
           
-            
     - id: publish
       name: Publish
       action: publish:github:pull-request
