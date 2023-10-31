@@ -62,7 +62,6 @@ spec:
       action: fetch:cookiecutter
       input:
         url: "https://github.com/eeveebank/cookiecutter-app-chart/tree/master"
-        imageName: 
         copyWithoutRender: 
           - "*README.md.gotmpl"
         values:
