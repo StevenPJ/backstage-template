@@ -1,0 +1,13 @@
+{
+  "application": "Service",
+  "repository": "my-repo-name",
+  "namespace": "my-namespace",
+  "upstream_helm_chart": ["backend-generic", "backend-spring", "backend-micronaut"],
+  "__chart_folder": "charts",
+  "__github_folder": ".github",
+  "__application_slug": "test",
+  "__project_name": "test_app_chart",
+  "_copy_without_render": [
+    "*README.md.gotmpl"
+  ]
+}
