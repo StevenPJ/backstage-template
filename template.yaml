@@ -69,6 +69,10 @@ spec:
           repository: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
           namespace: ${{ parameters.namespace }}
           upstream_helm_chart: ${{ parameters.upstream_helm_chart }}
+          __chart_folder: "charts"
+          __github_folder: ".github"
+          __application_slug: "{{ cookiecutter.application.lower().replace(' ', '_') }}"
+          __project_name: "{{ cookiecutter.__application_slug ~ '_app_chart' }}"          
             
     - id: publish
       name: Publish
