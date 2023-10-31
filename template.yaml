@@ -61,7 +61,7 @@ spec:
       name: Fetch Base
       action: fetch:cookiecutter
       input:
-        url: "https://github.com/eeveebank/cookiecutter-app-chart/tree/master"
+        url: "https://github.com/StevenPJ/backstage-template/tree/main/test"
         copyWithoutRender: 
           - "*README.md.gotmpl"
         values:
