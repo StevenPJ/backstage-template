@@ -64,7 +64,7 @@ spec:
         path: 'proxy/cookiecutter/cookiecutter.zip'
         method: 'POST'
         headers:
-          Content-Type: 'application/json'
+          "Content-Type": 'application/json'
         body: 
           sshGitRepoUrl: "git@github.com:eeveebank/cookiecutter-app-chart.git"
           ref: "v1.0.6"
