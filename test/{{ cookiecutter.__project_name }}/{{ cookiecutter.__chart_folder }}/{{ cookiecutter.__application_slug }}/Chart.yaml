@@ -1,0 +1,20 @@
+apiVersion: v2
+appVersion: 0.0.0
+description: A chart for {{ cookiecutter.application }}
+home: https://github.com/eeveebank/{{ cookiecutter.repository }}
+name: "{{ cookiecutter.application }}"
+version: 0.0.0
+dependencies:
+#{%- if cookiecutter.upstream_helm_chart == "backend-generic" %}
+  - name: backend-generic
+    repository: https://mettle-charts.storage.googleapis.com
+    version: "4.12.2"
+#{%- elif cookiecutter.upstream_helm_chart == "backend-spring" %}
+  - name: backend-spring
+    repository: https://mettle-charts.storage.googleapis.com
+    version: "9.3.5"
+#{%- elif cookiecutter.upstream_helm_chart == "backend-micronaut" %}
+  - name: backend-micronaut
+    repository: https://mettle-charts.storage.googleapis.com
+    version: "9.4.0"
+#{% endif %}

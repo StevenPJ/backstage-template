@@ -1,0 +1,41 @@
+name: Release app chart
+
+on:
+  push:
+
+jobs:
+  get-version:
+    uses: eeveebank/github-actions-backend/.github/workflows/increment-version.yaml@v0
+
+  build-test-release:
+    needs: get-version
+    uses: eeveebank/github-actions-backend/.github/workflows/run-release-app-chart.yaml@master
+    secrets: inherit
+    with:
+      javaVersion: "17"
+      gradleCommand: |
+        build
+        --build-cache
+        -Dfile.encoding=UTF8
+        -Dpactbroker.url=https://pact-broker.eevee.tools-mettle.co.uk
+        -Dpactbroker.auth.username=pact-readwrite
+        -Dpactbroker.providerBranch="master"
+        -Dpact.provider.branch="master"
+        -Dpactbroker.enablePending=true
+        -Dpact.provider.version={{ '${{ needs.get-version.outputs.appVersion }}' }}
+        -Dpact.verifier.publishResults=true
+      appVersion: {{ '${{ needs.get-version.outputs.appVersion }}' }}
+      helmChartFolder: {{ cookiecutter.__chart_folder }}/{{ cookiecutter.__application_slug }}
+      dockerBakeFile: ./docker-bake.json
+
+  deploy-in-dev:
+    needs: [ get-version, build-test-release ]
+    uses: eeveebank/github-action-deploy/.github/workflows/deploy-argo-app.yaml@master
+    secrets: inherit
+    with:
+      appName: {{ cookiecutter.__application_slug }}
+      appVersion: {{ '${{ needs.get-version.outputs.appVersion }}' }}
+      environment: dev
+      clusterName: dev
+      namespace: {{ cookiecutter.namespace }}
+      timeout: 10m

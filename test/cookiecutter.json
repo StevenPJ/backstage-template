@@ -1,0 +1,13 @@
+{
+  "application": "Service",
+  "repository": "my-repo-name",
+  "namespace": "my-namespace",
+  "upstream_helm_chart": ["backend-generic", "backend-spring", "backend-micronaut"],
+  "__chart_folder": "charts",
+  "__github_folder": ".github",
+  "__application_slug": "{{ cookiecutter.application.lower().replace(' ', '_') }}",
+  "__project_name": "{{ cookiecutter.__application_slug ~ '_app_chart' }}",
+  "_copy_without_render": [
+    "*README.md.gotmpl"
+  ]
+}
