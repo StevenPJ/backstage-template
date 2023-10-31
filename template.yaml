@@ -61,7 +61,7 @@ spec:
       name: backstage request
       action: http:backstage:request
       input:
-        path: 'proxy/cookiecutter/cookiecutter'
+        path: 'proxy/cookiecutter/cookiecutter.zip'
         method: 'GET'
         
     - id: unzip
