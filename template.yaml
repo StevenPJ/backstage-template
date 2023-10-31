@@ -63,8 +63,6 @@ spec:
       input:
         path: 'proxy/cookiecutter/cookiecutter.zip'
         method: 'GET'
-        headers:
-          content-type: 'multipart/form-data'
         
     - id: unzip
       name: unzip
