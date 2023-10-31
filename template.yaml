@@ -59,7 +59,7 @@ spec:
   steps:
     - id: backstage_request
       name: backstage request
-      action: fetch:plain
+      action: http:backstage:request
       input:
         url: 'proxy/cookiecutter/cookiecutter'
         
