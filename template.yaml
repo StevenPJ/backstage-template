@@ -61,7 +61,7 @@ spec:
       name: Fetch Base
       action: fetch:cookiecutter
       input:
-        url: "https://github.com/eeveebank/cookiecutter-app-chart/{{ cookiecutter.__project_name }}"
+        url: "https://github.com/eeveebank/cookiecutter-app-chart/tree/master/%7B%7B%20cookiecutter.__project_name%20%7D%7D"
         copyWithoutRender: 
           - "*README.md.gotmpl"
         values:
@@ -69,11 +69,16 @@ spec:
           repository: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
           namespace: ${{ parameters.namespace }}
           upstream_helm_chart: ${{ parameters.upstream_helm_chart }}
+          __chart_folder: "charts"
+          __github_folder: ".github"
+          __application_slug: "{{ cookiecutter.application.lower().replace(' ', '_') }}"
+          __project_name: "{{ cookiecutter.__application_slug ~ '_app_chart' }}"
             
     - id: publish
       name: Publish
       action: publish:github:pull-request
       input:
-        allowedHosts: ['github.com']
-        description: This is ${{ parameters.name }}
+        title: Setup app chart
+        branchName: setup-app-chart
+        description: Setting up app chart from backstage template
         repoUrl: ${{ parameters.repoUrl }}
