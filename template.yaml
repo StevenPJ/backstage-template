@@ -59,9 +59,10 @@ spec:
   steps:
     - id: fetch-base
       name: Fetch Base
-      action: fetch:cookiecutter
+      action: fetch:template
       input:
         url: "https://github.com/eeveebank/cookiecutter-app-chart/tree/master/%7B%7B%20cookiecutter.__project_name%20%7D%7D"
+        cookiecutterCompat: true
         copyWithoutRender: 
           - "*README.md.gotmpl"
         values:
