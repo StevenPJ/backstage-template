@@ -1,0 +1,15 @@
+name: Helm Diff
+
+on:
+  pull_request:
+    paths:
+      - "charts/**"
+
+jobs:
+
+  diff:
+    runs-on: self-hosted
+    steps:
+      - uses: eeveebank/github-actions-backend/helm-diff@v0
+        with:
+          chartPath: charts/{{ cookiecutter.application.lower().replace(' ', '_') }}
