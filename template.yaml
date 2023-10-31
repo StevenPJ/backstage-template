@@ -1,4 +1,4 @@
-apiVersion: scaffolder.backstage.io/v1beta3
+apiVersion: scaffolder.backstage.io/v1beta1
 kind: Template
 # some metadata about the template itself
 metadata:
