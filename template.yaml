@@ -59,7 +59,7 @@ spec:
   steps:
     - id: backstage_request
       name: backstage request
-      action: boxed:file:httpZip
+      action: boxed:cookiecutter:overHttp
       input:
         path: 'proxy/cookiecutter/cookiecutter.zip'
         method: 'POST'
