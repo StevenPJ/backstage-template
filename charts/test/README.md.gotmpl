@@ -1,0 +1,74 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+
+## Releases
+
+This app chart is released on merges to the master branch. The pipeline will generate a new semantic version, and then promote the changes through each environment one at a time. The app chart will include the correct docker image version. This means that chart changes can now go through the pipelines, reducing the risks of untested changes reaching production. Environment specific configuration can still be defined directly in the ArgoApplication resources. With app charts, this env config should be minimal, and will still allow env specific changes to go without needing to run the whole pipeline i.e. toggling resources/feature flags. Renovate will automatically suggest updates to the upstream charts for you.
+
+## Deploying the Chart
+
+You should add an ArgoApplication to k8s-releases-mettle that deploys your app chart. For an example, see the [ssv-debit-card-migration](https://github.com/eeveebank/k8s-releases-mettle/blob/master/kustomize/dev/ssv/applications/ssv-debit-card-migration.yaml) service. Note the following:
+```yaml
+spec:
+  project: zz-unknown-ownership-apps
+  source:
+    repoURL: ghcr.io/eeveebank/ssv-debit-card # the helm chart is published to github container registry
+    chart: ssv-debit-card-migration # the name of the chart
+    targetRevision: 0.0.856 # the semantic version of the chart, this is what github actions will promote during deployments
+```
+
+There is a helm diff action in `.github/workflows/helm-diff.yaml` which will generate a diff of the rendered helm chart on PR's whenever the chart changes. This is helpful as you can see what specific resources change when a value is updated. There is an example of how to deploy the chart using GHA in `.github/workflows/deploy-app-chart.yml`. You can copy the steps into an existing workflow, or tweak the workflow for your specific use case. The `uses: eeveebank/github-actions-backend/.github/workflows/run-release-app-chart.yaml@master` job will package the app chart, publish it to ghcr with the correct docker version of the app. The `uses: eeveebank/github-action-deploy/.github/workflows/deploy-argo-app.yaml@master` job will update the argo application in k8s-releases-mettle.
+
+## Making chart changes
+
+Each component depends on an upstream chart in Chart.yaml. You should put any configuration common in each environment in `values.yaml` i.e. the config that lived in `k8s-releases-mettle/kustomize/base`. If you want to override any component configuration from the parent chart, then you can update the `values.yaml` as described in the [helm subchart docs](https://helm.sh/docs/chart_template_guide/subcharts_and_globals/), i.e.
+
+in `values.yaml`
+```yaml
+upstream-chart-name: # this key is defined in the chart dependencies in Chart.yaml
+  application:
+    replicaCount: 1
+```
+
+You can also add additional resources to the app chart in the `templates/` directory. For example to package kafka topics with the app chart, you can create a `templates/topic.yaml` file which renders the topic, which can take advantage of [helm templates](https://helm.sh/docs/chart_best_practices/templates/). The following example dynamically changes partitions based on the `env` property defined in the `values.yaml`. This can simplify your environment configuration i.e only define an `env` value and let the helm chart render the right config for you.
+```yaml
+apiVersion: kafka.mettle.co.uk/v1
+kind: Topic
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: ssv-form3-payment-events-v7
+  namespace: ssv
+  annotations:
+    spec.kafka.mettle.co.uk/override: "true" # to allow acl setup
+spec:
+  {{`{{ if $.Values.env == prd -}}`}}
+    numPartitions: 12
+  {{`{{ else -}}`}}
+    numPartitions: 3
+  {{`{{- end -}}`}}
+
+  replicationFactor: 3
+  immutable: true
+  config:
+    min.insync.replicas: "2"
+    retention.ms: "-1"
+```
+## Updating the documentation
+
+We use [`helm-docs`](https://github.com/norwoodj/helm-docs/tree/master#installation) to generate this README + Values from the `README.md.gotmpl`. Please install and use `helm-docs` any time the `values.yaml` file is changed.
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
