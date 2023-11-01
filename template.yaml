@@ -59,15 +59,15 @@ spec:
   steps:
     - id: backstage_request
       name: backstage request
-      action: boxed:cookiecutter:overHttp
+      action: http:cookiecutter
       input:
-        path: 'proxy/cookiecutter/cookiecutter.zip'
-        method: 'POST'
-        headers:
-          content-type: 'application/json'
-        body: 
-          sshGitRepoUrl: "git@github.com:eeveebank/cookiecutter-app-chart.git"
-          ref: "v1.0.6"
+        url: 'git@github.com:eeveebank/cookiecutter-app-chart.git'
+        ref: "v1.0.6"'
+        config: 
+          application: ${{ parameters.application }}
+          namespace: ${{ parameters.namespace }}
+          upstream_helm_chart: ${{ parameters.upstream_helm_chart }}
+
           
     - id: publish
       name: Publish
