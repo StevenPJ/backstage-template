@@ -1,0 +1,85 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+# some metadata about the template itself
+metadata:
+  name: create-app-chart
+  title: Create App Chart
+  description: Create's a new helm chart for your app
+spec:
+  owner: production-engineering
+  type: service
+
+  # these are the steps which are rendered in the frontend with the form input
+  parameters:
+    - title: Fill in some steps
+      required:
+        - application
+        - namespace
+        - upstream_helm_chart
+      properties:
+        application:
+          title: Application Name
+          type: string
+          description: Name of the component
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        namespace:
+          title: Namespace
+          type: string
+          description: Namespace the app is deployed to i.e. ssv|eevee
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        upstream_helm_chart:
+          title: Base Helm Chart
+          type: string
+          description: The base helm chart to extend for the app
+          ui:autofocus: true
+          enum:
+            - backend-generic
+            - backend-spring
+            - backend-micronaut
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedOrganizations:
+              - eeveebank
+              - StevenPJ
+            allowedHosts:
+              - github.com
+
+  # here's the steps that are executed in series in the scaffolder backend
+  steps:
+    - id: backstage_request
+      name: backstage request
+      action: http:backstage:request
+      input:
+        method: 'POST'
+        path: 'proxy/cookiecutter/cookiecutter.zip'
+        headers:
+          content-type: 'application/json'
+        body:
+          sshGitRepoUrl: "git@github.com:eeveebank/cookiecutter-app-chart.git"
+          ref: "v1.0.6"
+
+    - id: unzip
+      name: backstage request
+      action: boxed:file:httpZip2
+      input:
+        content: ${{ steps["backstage_request"].output.body }}
+
+    - id: publish
+      name: Publish
+      action: publish:github:pull-request
+      input:
+        title: Setup app chart
+        branchName: setup-app-chart
+        description: Setting up app chart from backstage template
+        repoUrl: ${{ parameters.repoUrl }}
