@@ -61,8 +61,8 @@ spec:
       name: backstage request
       action: http:cookiecutter
       input:
-        url: 'git@github.com:eeveebank/cookiecutter-app-chart.git'
-        ref: "v1.0.6"'
+        url: "git@github.com:eeveebank/cookiecutter-app-chart.git"
+        ref: "v1.0.6"
         config: 
           application: ${{ parameters.application }}
           namespace: ${{ parameters.namespace }}
