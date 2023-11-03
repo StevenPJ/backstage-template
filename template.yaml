@@ -99,9 +99,7 @@ spec:
     
   output:
     links:
-      - title: Pull Request
+      - title: View the PR
         url: ${{ steps['publish'].output.remoteUrl }}
-    text:
-      - title: More information on app charts
-        content: |
-          **Confluence:** `https://eeveebank.atlassian.net/wiki/spaces/FUD/pages/84680409444/App+Charts`        
+      - title: More Information
+        url: https://eeveebank.atlassian.net/wiki/spaces/FUD/pages/84680409444/App+Charts   
