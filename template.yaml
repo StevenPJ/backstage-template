@@ -2,9 +2,29 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 # some metadata about the template itself
 metadata:
-  name: create-app-chart
-  title: Create a new App Chart
-  description: Create's a new helm chart for your app
+  name: create-backend-app-chart
+  title: Create a backend app chart
+  description: Create's a new helm chart for your backend app
+  tags:
+    - helm
+    - backend
+  links:
+    - title: Docs
+      url: https://eeveebank.atlassian.net/wiki/spaces/FUD/pages/84680409444/App+Charts
+      type: documentation
+      icon: help
+    - title: Cookiecutter
+      url: https://github.com/eeveebank/cookiecutter-app-chart
+      type: documentation
+      icon: Cookie
+    - title: Releases
+      url: https://github.com/eeveebank/cookiecutter-app-chart/releases
+      type: documentation
+      icon: NewReleases
+    - title: ADR
+      url: https://github.com/eeveebank/cookiecutter-app-chart/tree/master/doc/adr
+      type: documentation
+      icon: techdocs
 spec:
   owner: production-engineering
   type: template
@@ -70,7 +90,18 @@ spec:
       name: Publish
       action: publish:github:pull-request
       input:
-        title: Setup App chart for ${{ parameters.application }}
+        title: Setup app chart for ${{ parameters.application }}
         branchName: setup-app-chart
         description: Setting up app chart from backstage template
         repoUrl: ${{ parameters.repoUrl }}
+        commitMessage: 'feat: create an app chart'
+        update: true
+    
+  output:
+    links:
+      - title: Pull Request
+        url: ${{ steps['publish'].output.remoteUrl }}
+    text:
+      - title: More information on app charts
+        content: |
+          **Confluence:** `https://eeveebank.atlassian.net/wiki/spaces/FUD/pages/84680409444/App+Charts`        
