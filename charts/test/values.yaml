@@ -1,0 +1,262 @@
+backend-generic:
+  maintainedBy: mettle
+  ## Init Container for provisioning a database and user.
+  dependsOn:
+    additionalApplications: []
+  #    - label: "app_name=feature-flag"
+  #      namespace: eevee
+  #      requiredPodCount: 1 (optional, defaults to 1)
+  #      randomDelayInSeconds: 60 (optional, defaults to 60)
+
+  perimener:
+    image:
+      repository: eu.gcr.io/mettle-bank/perimener
+      tag: 1.1.265
+      pullPolicy: IfNotPresent
+  application:
+    serviceAccount:
+      create: true
+      # Use release name if empty
+      name: ""
+    replicaCount: 3
+    minReadySeconds: 90
+    image:
+      repository: eu.gcr.io/eevee-bank/test
+      tag: REPLACE_ME
+      pullPolicy: IfNotPresent
+    # The Kubernetes secret used to allow pulling the image from a private image registry.
+    # This defaults to a blank string so that it is not used by default.
+    imagePullSecretName: ""
+    readinessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 60
+      timeoutSeconds: 30
+      failureThreshold: 24
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 60
+      timeoutSeconds: 30
+      failureThreshold: 24
+    container:
+      port: 8080
+      httpsEnabled: false
+      httpsPort: 8443
+    ## Pod Annotations
+    podAnnotations:
+      prometheus.io/port: "8080"
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/metrics"
+    ## Deployment annotations
+    # annotations: {}
+    service:
+      annotations: {}
+    nodeSelector: {}
+    tolerations: []
+    # - key: CriticalAddonsOnly
+    #  operator: Exists
+
+    # Any additional containers that should be created in this pod
+    sidecarContainers: []
+    # Set this to configure the env tag for DataDog. Is missing will avoid configuring DataDog env tag.
+    datadog:
+      # Used to set the env unified tag on the relevant resources
+      # env: "sbx"
+      # namespace and metrics correspond to values in annotations documented here:
+      # https://docs.datadoghq.com/containers/kubernetes/prometheus/?tab=kubernetesadv2
+      openmetrics:
+        enabled: false
+        namespace: null
+        metrics: []
+      logs:
+        enabled: false
+        source: java
+        log_processing_rules: []
+    ## Extra environment variables that will be passed into pods
+    env: {}
+    #  KEY: value
+    #  KEY2: value
+
+    ## Extra environment variables (from existing secrets) that will be pass into pods
+    envFromSecret: []
+    # - name: SPRING_DATASOURCE_URL
+    #   secretName: app-secret
+    #   secretKeyRef: first-key
+
+    ## Extra environment variables provided from configMaps that will be pass into pods
+    envFromConfigMap: []
+    #   - name: ENVIRONMENT_VAR_NAME
+    #     configMapName: config-map
+    #     configMapKeyRef: first-key.json
+
+    ## Additional container arguments
+    args: []
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 128Mi
+    # Specify horizontal or vertical autoscaling configuration
+    autoscaling:
+      # Define autoscaling behaviour, one of 'horizontal', 'vertical' or 'off'
+      behaviour: 'off'
+      # Define horizontal autoscaling behaviour
+      horizontal:
+        # Minimum number of replicas
+        minReplicas: 2
+        # Maximum number of replicas
+        maxReplicas: 5
+        # Target CPU utilization (0-100)
+        targetCPUUtilizationPercentage: 80
+        # Target memory utilization (0-100)
+        targetMemoryUtilizationPercentage: 80
+      # Define horizontal autoscaling behaviour
+      vertical:
+        # List of resource metrics to measure
+        controlledResources: ['cpu', 'memory']
+        # Values to change when autoscaling, one of RequestsAndLimits, RequestsOnly
+        controlledValues: RequestsAndLimits
+        # Minimum requests allowed
+        minAllowed: # +doc-gen:break
+          cpu: 100m
+          memory: 128Mi
+        # Maximum requests allowed
+        maxAllowed: # +doc-gen:break
+          cpu: 2
+          memory: 2Gi
+    ingress:
+      enabled: false
+      ingressClassName: nginx
+      tls:
+        enabled: true
+        secret: {}
+      host: example.eevee.sbx-mettle.co.uk
+      #    annotations:
+      #      certmanager.k8s.io/acme-challenge-type: "http01"
+      #      certmanager.k8s.io/cluster-issuer: "letsencrypt"
+      #      kubernetes.io/tls-acme: "true"
+      #      nginx.ingress.kubernetes.io: ""
+      #      nginx.ingress.kubernetes.io/auth-signin: "https://auth.oidc.sbx-mettle.co.uk/oauth2/start?rd=https://$host$request_uri$is_args$args"
+      #      nginx.ingress.kubernetes.io/auth-url: "https://auth.oidc.sbx-mettle.co.uk/oauth2/auth"
+      additionalPaths: []
+    #      - path: "/api"
+    #        serviceName: xyz
+    #        servicePort: 80
+
+    configMaps: {}
+    #  ops-tool-client:
+    #    data:
+    #      default.conf: |
+    #        server {
+    #            listen       80;
+    #            server_name  ops-tool-client;
+    #
+    #            location / {
+    #                root /usr/share/nginx/html;
+    #                try_files $uri /index.html;
+    #            }
+    #
+    #            location /sw.js {
+    #                add_header Cache-Control "no-cache";
+    #                proxy_cache_bypass $http_pragma;
+    #                proxy_cache_revalidate on;
+    #                expires off;
+    #                access_log off;
+    #            }
+    #
+    #            location /api/ {
+    #                proxy_pass {{ .Values.client.configuration.serverEndpoint }};
+    #            }
+    #        }
+
+    ## Secret mounts & volume mounts
+    # Defines mounts with secrets. Secrets must be manually created in the namespace.
+    volumes:
+      enabled: false
+      secretVolumeMounts: []
+      #   - name: secret-files
+      #     path: /etc/secrets
+      #   - name: secret-files
+      #     path: /etc/secrets
+      secretVolumes: []
+      #   - name: secret-files
+      #     secretName: some-secret-files
+      #   - name: secret-files
+      #     secretName: some-secret-files
+      configMapVolumeMounts: []
+      #      - name: config-map-files
+      #        path: /etc/config
+      configMapVolumes: []
+      #      - name: config-map-files
+      #        configMapName: config-map-name
+      #        rollDeploymentOnChange: true
+      # Additional volume mounts for emptyDir's
+      emptyDirVolumeMounts: []
+      #      - name: config-map-files
+      #        path: /etc/config
+      # A list of emptyDir volumes
+      emptyDirVolumes: []
+    #      - name: testing
+    #      - name: testing123
+
+    # Define what to run for pod lifecycle events
+    lifecycle:
+      preStop:
+        exec:
+          # Introduce a delay to the shutdown sequence to wait for the
+          # pod eviction event to propagate - so the pod is removed from
+          # the Endpoint before it is deleted
+          command: ["sleep", "10"]
+  # The security contexts at the pod level
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+    fsGroup: 1000
+  # The security contexts at the individual container level
+  securityContexts:
+    # The security context for the application container
+    application:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+      seccompProfile:
+        type: RuntimeDefault
+  backstage:
+    # Language should be one of go, java, javascript, python, third-party
+    language: null
+    # This is the .metadata.name of the Backstage "System"
+    system: null
+    # Tier should be 1, 2, 3 or 4
+    tier: null
+  chaos:
+    enabled: false
+    # https://github.com/asobti/kube-monkey#opting-in-to-chaos
+    mtbf: 1
+    killMode: fixed
+    killValue: 1
+  serviceAccount:
+    annotations: {}
+  podLabels: {}
+  # for flux2 image updater v2
+  imageTag:
+    env: prd
+    createCRDs: false
+  aws:
+    iam:
+      # Enable AWS IAM authentication for this service
+      enabled: false
+      # Method to use to authenticate this service (one of kiam or irsa)
+      method: kiam
+      # The name of the role the service should use
+      role: null
+  service:
+    enabled: true
