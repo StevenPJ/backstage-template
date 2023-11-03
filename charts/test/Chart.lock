@@ -1,0 +1,6 @@
+dependencies:
+- name: backend-generic
+  repository: https://mettle-charts.storage.googleapis.com
+  version: 4.12.2
+digest: sha256:445bd6ae88ae2ff21f965fb325fdcbbbbc8cf785886349496362c7da4c0ff951
+generated: "2023-11-03T13:26:47.720510502Z"
