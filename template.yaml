@@ -16,11 +16,11 @@ metadata:
     - title: Cookiecutter
       url: https://github.com/eeveebank/cookiecutter-app-chart
       type: documentation
-      icon: Cookie
+      icon: scaffolder
     - title: Releases
       url: https://github.com/eeveebank/cookiecutter-app-chart/releases
       type: documentation
-      icon: NewReleases
+      icon: catalog
     - title: ADR
       url: https://github.com/eeveebank/cookiecutter-app-chart/tree/master/doc/adr
       type: documentation
