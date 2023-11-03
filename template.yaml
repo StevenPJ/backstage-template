@@ -20,7 +20,7 @@ metadata:
     - title: Releases
       url: https://github.com/eeveebank/cookiecutter-app-chart/releases
       type: documentation
-      icon: 'kind:location'
+      icon: catalog
     - title: ADR
       url: https://github.com/eeveebank/cookiecutter-app-chart/tree/master/doc/adr
       type: documentation
